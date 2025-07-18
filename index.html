@@ -42,10 +42,52 @@
         input:checked + .slider:before { background-color: var(--color-acento); transform: translateX(24px); }
         .slider.round { border-radius: 34px; }
         .slider.round:before { border-radius: 50%; }
+
+        /* --- ESTILOS DEL BOTÓN Y POPUP DE INSTALACIÓN iOS --- */
+        .ios-install-button {
+            display: none; /* Oculto por defecto, se mostrará con JS */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--color-acento);
+            color: #121212;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .ios-install-popup-overlay {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .ios-install-popup-content {
+            background-color: var(--color-superficie);
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 320px;
+            text-align: center;
+            position: relative;
+        }
+        .ios-install-popup-content h3 { margin-bottom: 15px; }
+        .ios-install-popup-content ol { text-align: left; padding-left: 20px; }
+        .ios-install-popup-content li { margin-bottom: 15px; }
+        .ios-install-popup-content .share-icon { font-size: 1.5rem; }
+        .close-popup-button { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--color-texto-secundario); }
     </style>
 </head>
 <body>
-
     <div class="header_page">
         <div class="logo">
             <img src="img/logo.png" alt="Logo Duende">
@@ -65,72 +107,79 @@
              </div>
     </div>
     
+    <button class="ios-install-button" id="ios-install-button">
+        <i class="fas fa-mobile-alt"></i> Instalar App
+    </button>
+
+    <div class="ios-install-popup-overlay" id="ios-install-popup">
+        <div class="ios-install-popup-content">
+            <button class="close-popup-button" id="close-popup-button">&times;</button>
+            <h3>Instalar Aplicación en iOS</h3>
+            <ol>
+                <li>Pulsa el icono de <strong>Compartir</strong> <i class="fas fa-share-square share-icon"></i> en Safari.</li>
+                <li>Busca y selecciona la opción <strong>"Añadir a pantalla de inicio"</strong>.</li>
+                <li>Confirma pulsando <strong>"Añadir"</strong> en la esquina superior derecha.</li>
+            </ol>
+        </div>
+    </div>
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <script>
         // Lógica de la Aplicación
         $(document).ready(function() {
-            fetch('script.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error al cargar script.json');
-                    return response.json();
-                })
-                .then(data => displayEvents(data))
-                .catch(error => {
-                    console.error('Error en fetch:', error);
-                    $('#container_artist').html('<p>No se pudieron cargar los eventos.</p>');
-                });
-
+            fetch('script.json').then(r=>r.json()).then(displayEvents).catch(e=>console.error(e));
             function displayEvents(events) {
-                const resultsContainer = $('#container_artist');
-                resultsContainer.empty();
-                if (!events || events.length === 0) {
-                    resultsContainer.html('<p>No se encontraron eventos.</p>');
-                    return;
-                }
-                events.forEach(event => {
-                    const cardHTML = `
-                        <div class="card_artist">
-                            <h2>${event.name || 'Sin Título'}</h2>
-                            <p><strong>${event.artist || 'Artista no especificado'}</strong></p>
-                            <p>${event.description || ''}</p>
-                            <p style="color: var(--color-texto-secundario); font-size: 0.8rem; margin-top: 10px;">
-                                ${event.city || ''} - ${event.date || ''}
-                            </p>
-                        </div>
-                    `;
-                    resultsContainer.append(cardHTML);
-                });
+                const c = $('#container_artist'); c.empty();
+                if (!events || events.length === 0) { c.html('<p>No se encontraron eventos.</p>'); return; }
+                events.forEach(e => { c.append(`<div class="card_artist"><h2>${e.name||'Sin Título'}</h2><p><strong>${e.artist||'N/A'}</strong></p><p>${e.description||''}</p><p style="color:var(--color-texto-secundario);font-size:0.8rem;margin-top:10px;">${e.city||''}-${e.date||''}</p></div>`); });
             }
         });
 
         // Lógica del Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service worker registrado.', reg))
-                    .catch(err => console.error('Error al registrar.', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').then(r=>console.log('SW ok')).catch(e=>console.error(e)); });
         }
 
-        // Lógica para el selector de tema
+        // Lógica del Selector de Tema
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
         const themeMetaTag = document.querySelector('meta[name="theme-color"]');
         function applyTheme(theme) {
-            if (theme === 'light') {
-                body.classList.add('light-theme');
-                themeToggle.checked = true;
-                themeMetaTag.setAttribute('content', '#f5f5f5');
-            } else {
-                body.classList.remove('light-theme');
-                themeToggle.checked = false;
-                themeMetaTag.setAttribute('content', '#121212');
-            }
+            if (theme === 'light') { body.classList.add('light-theme'); themeToggle.checked = true; themeMetaTag.setAttribute('content', '#f5f5f5'); }
+            else { body.classList.remove('light-theme'); themeToggle.checked = false; themeMetaTag.setAttribute('content', '#121212'); }
             localStorage.setItem('theme', theme);
         }
         themeToggle.addEventListener('change', () => applyTheme(themeToggle.checked ? 'light' : 'dark'));
-        document.addEventListener('DOMContentLoaded', () => applyTheme(localStorage.getItem('theme') || 'dark'));
+        
+        // --- LÓGICA PARA EL POPUP DE INSTALACIÓN EN iOS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const installButton = document.getElementById('ios-install-button');
+            const installPopup = document.getElementById('ios-install-popup');
+            const closeButton = document.getElementById('close-popup-button');
+            
+            // Cargar el tema guardado al inicio
+            applyTheme(localStorage.getItem('theme') || 'dark');
+            
+            if (isIOS) {
+                installButton.style.display = 'block';
+            }
+
+            installButton.addEventListener('click', () => {
+                installPopup.style.display = 'flex';
+            });
+
+            closeButton.addEventListener('click', () => {
+                installPopup.style.display = 'none';
+            });
+            
+            installPopup.addEventListener('click', (event) => {
+                if (event.target === installPopup) {
+                    installPopup.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
