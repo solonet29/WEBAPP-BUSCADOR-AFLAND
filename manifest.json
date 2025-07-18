@@ -1,24 +1,22 @@
 {
   "lang": "es-ES",
-  "name": "Buscador Flamenco",
-  "short_name": "Buscador",
-  "description": "WebApp para buscar conciertos y eventos de flamenco",
-  "scope": "./",
+  "name": "Buscador Flamenco Afland PWA",
+  "short_name": "Buscador Afland",
+  "description": "Buscador de eventos y conciertos de flamenco.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#858052",
-  "background_color": "#170807",
+  "background_color": "#121212",
+  "theme_color": "#121212",
   "icons": [
     {
-      "src": "./icono-buscador.jpg",
+      "src": "img/logo-afland-pro.png",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png"
     },
     {
-      "src": "./icono-buscador.jpg",
+      "src": "img/logo-afland-pro.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

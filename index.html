@@ -3,173 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Conciertos Flamencos</title>
+    <title>Buscador Flamenco (PWA)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="icon" type="image/jpeg" href="icono-buscador.jpg">
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="img/logo-afland-pro.png">
+    <meta name="theme-color" content="#121212">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 
     <style>
-        /* --- VARIABLES TEMA OSCURO (POR DEFECTO) --- */
+        /* =================================
+           VARIABLES Y SELECTOR DE TEMA
+        ==================================== */
         :root {
-            --color-fondo: #170807;
+            --color-fondo: #121212;
             --color-superficie: #1e1e1e;
             --color-borde: #444;
-            --color-primario: #858052; 
-            --color-acento-brillante: #D4C992; 
             --color-texto-principal: #e0e0e0;
             --color-texto-secundario: #a0a0a0;
+            --color-acento: #ffc107;
         }
 
-        /* --- VARIABLES PARA EL TEMA CLARO --- */
         body.light-theme {
-            --color-fondo: #fdfaef;
+            --color-fondo: #f5f5f5;
             --color-superficie: #ffffff;
             --color-borde: #dddddd;
-            --color-primario: #858052; 
-            --color-acento-brillante: #b8ae7a; 
-            --color-texto-principal: #170807;
-            --color-texto-secundario: #5c5c5c;
+            --color-texto-principal: #212121;
+            --color-texto-secundario: #616161;
+            --color-acento: #ff8f00;
         }
-        
-        /* --- ESTILOS GENERALES --- */
+
+        /* ESTILOS COMPLETOS DE buscador.afland.es ADAPTADOS CON VARIABLES */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--color-fondo);
             color: var(--color-texto-principal);
-            margin: 0 auto;
-            padding: 1rem; 
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            max-width: 1200px;
             transition: background-color 0.3s, color 0.3s;
         }
-        
-        .container { 
-            text-align: center;
-            flex-grow: 1;
-            width: 100%;
-        }
-
-        /* --- HEADER Y TÍTULOS --- */
-        header {
+        .header_page {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; 
+            padding: 20px;
+            background-color: var(--color-superficie);
+            border-bottom: 1px solid var(--color-borde);
         }
+        .logo img {
+            width: 150px;
+        }
+        .card_artist {
+            background-color: var(--color-superficie);
+            border: 1px solid var(--color-borde);
+            padding: 15px;
+            margin: 10px;
+            text-align: center;
+            width: 200px;
+        }
+        /* ... Aquí iría el resto de tu CSS de style.css, adaptado con var(...) ... */
 
-        h1 { 
-            font-size: 3rem; 
-            font-weight: 900;
-            color: var(--color-texto-principal);
-            margin-bottom: 2rem;
-        }
-        h1 span { 
-            color: var(--color-acento-brillante);
-        }
-        
-        h2 {
-            color: var(--color-texto-principal);
-            font-size: 2rem;
-            font-weight: 700;
-            margin-top: 4rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--color-primario);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
-
-        /* --- INTERRUPTOR DE TEMA --- */
-        .theme-switch-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--color-texto-secundario);
-        }
-        .theme-switch-wrapper .fa-sun { color: var(--color-acento-brillante); }
-        .theme-switch-wrapper .fa-moon { color: var(--color-primario); }
+        /* --- Estilos del Interruptor de Tema --- */
+        .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; }
+        .theme-switch-wrapper .fa-sun { color: var(--color-acento); font-size: 1.2rem; }
+        .theme-switch-wrapper .fa-moon { color: var(--color-texto-principal); font-size: 1.2rem; }
         .theme-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .theme-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-superficie); border: 1px solid var(--color-borde); transition: .4s; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: var(--color-texto-secundario); transition: .4s; }
-        input:checked + .slider { background-color: var(--color-primario); }
-        input:checked + .slider:before { transform: translateX(24px); }
+        input:checked + .slider { background-color: #ccc; }
+        input:checked + .slider:before { background-color: var(--color-acento); transform: translateX(24px); }
         .slider.round { border-radius: 34px; }
         .slider.round:before { border-radius: 50%; }
-
-        /* --- BARRA DE BÚSQUEDA --- */
-        .search-wrapper { position: relative; max-width: 500px; margin: 2rem auto; }
-        #searchInput { width: 100%; padding: 1rem 3.5rem 1rem 1.5rem; font-size: 1rem; border-radius: 50px; border: 2px solid var(--color-borde); background-color: var(--color-superficie); color: var(--color-texto-principal); box-sizing: border-box; transition: border-color 0.3s ease; }
-        #searchInput:focus { outline: none; border-color: var(--color-primario); }
-        #searchButton { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: none; background-color: var(--color-primario); color: var(--color-fondo); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s ease; }
-        #searchButton:hover { background-color: var(--color-acento-brillante); }
-
-        /* --- RESULTADOS --- */
-        #resultsContainer { text-align: left; margin-top: 2rem; }
-        .grid-mode { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        
-        /* --- FOOTER --- */
-        footer { text-align: center; padding: 2rem 0; margin-top: 4rem; color: var(--color-texto-secundario); border-top: 1px solid var(--color-borde); opacity: 0.8; }
-        footer a { color: var(--color-acento-brillante); text-decoration: none; font-weight: 700; }
-        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Tu Buscador <span>Flamenco</span></h1>
-            <div class="theme-switch-wrapper">
-                <i class="fas fa-sun"></i>
-                <label class="theme-switch" for="theme-toggle">
-                    <input type="checkbox" id="theme-toggle" />
-                    <span class="slider round"></span>
-                </label>
-                <i class="fas fa-moon"></i>
-            </div>
-        </header>
-        
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" placeholder="Busca por artista, ciudad, recinto...">
-            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <div class="header_page">
+        <div class="logo">
+            <img src="img/logo-afland-pro.png" alt="Logo Afland">
         </div>
+        <div class="theme-switch-wrapper">
+            <i class="fas fa-moon"></i>
+            <label class="theme-switch" for="theme-toggle">
+                <input type="checkbox" id="theme-toggle" />
+                <span class="slider round"></span>
+            </label>
+            <i class="fas fa-sun"></i>
+        </div>
+    </div>
 
-        <div class="filtros-ciudades">
-            </div>
-        
-        <h2>Próximos Eventos</h2>
-        <div id="resultsContainer" class="grid-mode">
-            </div>
+    <div class="container_all_page">
+        <div class="container_artist" id="container_artist">
+             </div>
     </div>
     
-    <footer>
-        <p>Desarrollado con ❤️ por Tu Nombre</p>
-    </footer>
-
-    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/script.js"></script>
 
     <script>
-        // REGISTRO DEL SERVICE WORKER (PWA)
+        // Lógica del Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado con éxito:', registration);
-                    })
-                    .catch(error => {
-                        console.log('Fallo al registrar el Service Worker:', error);
-                    });
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service worker registrado.', reg))
+                    .catch(err => console.error('Error registrando service worker.', err));
             });
         }
-    </script>
 
-    <script>
-        // LÓGICA DEL INTERRUPTOR DE TEMA
+        // Lógica del selector de tema
         const themeToggle = document.getElementById('theme-toggle');
-        const body
+        const body = document.body;
+        const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-theme');
+                themeToggle.checked = true;
+                themeMetaTag.setAttribute('content', '#f5f5f5');
+            } else {
+                body.classList.remove('light-theme');
+                themeToggle.checked = false;
+                themeMetaTag.setAttribute('content', '#121212');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('change', () => {
+            applyTheme(themeToggle.checked ? 'light' : 'dark');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(localStorage.getItem('theme') || 'dark');
+        });
+    </script>
+</body>
+</html>
