@@ -1,37 +1,63 @@
-// Nombre de la caché para nuestra PWA
-const CACHE_NAME = 'duende-finder-v1';
+// Asignamos un nombre y versión al caché
+const CACHE_NAME = 'webapp-buscador-afland-v1';
 
-// Archivos que se guardarán en caché durante la instalación.
-// Tu HTML, CSS y JS están en el mismo archivo, por lo que solo necesitamos cachear el archivo principal y el icono.
+// Definimos la lista de archivos a cachear
+// ¡Asegúrate de que estas rutas son correctas!
 const urlsToCache = [
   '/',
   '/index.html',
-  '/icono-buscador.jpg'
+  '/style.css',
+  '/script.js',
+  '/manifest.json',
+  '/img/144.png',
+  '/img/favicon.png'
+  // Si tienes más imágenes o archivos, ¡añádelos aquí!
 ];
 
-// Evento 'install': se dispara cuando el Service Worker se instala.
-self.addEventListener('install', event => {
-  event.waitUntil(
+// Evento 'install': se ejecuta cuando el Service Worker se instala
+self.addEventListener('install', e => {
+  e.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Caché abierta y archivos principales guardados');
+        console.log('Archivos cacheados exitosamente');
         return cache.addAll(urlsToCache);
+      })
+      .catch(err => {
+        console.error('Falló el cacheo de archivos', err);
       })
   );
 });
 
-// Evento 'fetch': se dispara para cada petición.
-// Intenta servir desde la caché primero, si no puede, va a la red.
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Si el recurso está en la caché, lo devolvemos
-        if (response) {
-          return response;
+// Evento 'activate': limpia cachés antiguos si el nombre del caché cambia
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Borrando caché antiguo', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// Evento 'fetch': intercepta las peticiones de red
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request)
+      .then(res => {
+        // Devuelve el recurso desde el caché si existe
+        if (res) {
+          return res;
         }
-        // Si no, lo pedimos a la red
-        return fetch(event.request);
+        // Si no está en caché, lo pide a la red
+        return fetch(e.request);
+      })
+      .catch(err => {
+        console.error('Error al hacer fetch', err);
       })
   );
 });

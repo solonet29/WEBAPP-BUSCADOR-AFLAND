@@ -1,0 +1,22 @@
+{
+  "name": "Duende Finder: Conciertos Flamencos",
+  "short_name": "Duende Finder",
+  "description": "Descubre la magia del flamenco. Busca conciertos, tablaos y festivales por toda Europa.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#170807",
+  "theme_color": "#858052",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
