@@ -1,24 +1,25 @@
 {
   "lang": "es-ES",
-  "name": "Buscador Afland",
-  "short_name": "Buscador Afland",
-  "description": "WebApp del buscador Afland",
-  "scope": "/",
-  "start_url": "/index.html",
+  "name": "Buscador Flamenco",
+  "short_name": "Buscador",
+  "description": "WebApp para buscar conciertos y eventos de flamenco",
+  "scope": "./",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#2196f3",
-  "background_color": "#2196f3",
+  "theme_color": "#858052",
+  "background_color": "#170807",
   "icons": [
     {
-      "src": "/img/favicon.png", // Ruta desde la raíz del sitio
-      "sizes": "32x32",
-      "type": "image/png"
+      "src": "./icono-buscador.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
     },
     {
-      "src": "/img/144.png", // Ruta desde la raíz del sitio
-      "sizes": "144x144",
-      "type": "image/png"
+      "src": "./icono-buscador.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }
