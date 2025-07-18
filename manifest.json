@@ -1,22 +1,24 @@
 {
-  "name": "Duende Finder: Conciertos Flamencos",
-  "short_name": "Duende Finder",
-  "description": "Descubre la magia del flamenco. Busca conciertos, tablaos y festivales por toda Europa.",
+  "lang": "es-ES",
+  "name": "Buscador Afland",
+  "short_name": "Buscador Afland",
+  "description": "WebApp del buscador Afland",
+  "scope": "/",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#170807",
-  "theme_color": "#858052",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
   "icons": [
     {
-      "src": "/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/img/favicon.png", // Ruta desde la raíz del sitio
+      "sizes": "32x32",
+      "type": "image/png"
     },
     {
-      "src": "/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/img/144.png", // Ruta desde la raíz del sitio
+      "sizes": "144x144",
+      "type": "image/png"
     }
   ]
 }
