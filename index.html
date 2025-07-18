@@ -14,99 +14,23 @@
     <link rel="apple-touch-icon" href="img/icon-192x192.png">
     <meta name="theme-color" content="#121212">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <img src="img/logo.png" alt="Logo Duende">
 
     <style>
-        /* =================================
-           VARIABLES Y SELECTOR DE TEMA
-        ==================================== */
         :root {
-            --color-fondo: #121212;
-            --color-superficie: #1e1e1e;
-            --color-borde: #444;
-            --color-texto-principal: #e0e0e0;
-            --color-texto-secundario: #a0a0a0;
-            --color-acento: #ffc107;
+            --color-fondo: #121212; --color-superficie: #1e1e1e; --color-borde: #444; --color-texto-principal: #e0e0e0; --color-texto-secundario: #a0a0a0; --color-acento: #ffc107;
         }
-
         body.light-theme {
-            --color-fondo: #f5f5f5;
-            --color-superficie: #ffffff;
-            --color-borde: #dddddd;
-            --color-texto-principal: #212121;
-            --color-texto-secundario: #616161;
-            --color-acento: #ff8f00;
+            --color-fondo: #f5f5f5; --color-superficie: #ffffff; --color-borde: #dddddd; --color-texto-principal: #212121; --color-texto-secundario: #616161; --color-acento: #ff8f00;
         }
-
-        /* =================================
-           ESTILOS COMPLETOS
-        ==================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--color-fondo);
-            color: var(--color-texto-principal);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        .header_page {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: var(--color-superficie);
-            border-bottom: 1px solid var(--color-borde);
-        }
-        .logo img {
-            width: 150px;
-            height: auto;
-        }
-
-        .container_all_page {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 20px;
-        }
-        .container_artist {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .card_artist {
-            background-color: var(--color-superficie);
-            border: 1px solid var(--color-borde);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card_artist:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-        .card_artist img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--color-borde);
-            margin-bottom: 15px;
-        }
-        .card_artist h2 {
-            font-size: 1.2rem;
-            color: var(--color-texto-principal);
-            margin-bottom: 5px;
-        }
-        .card_artist p {
-            font-size: 0.9rem;
-            color: var(--color-texto-secundario);
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo); color: var(--color-texto-principal); transition: background-color 0.3s, color 0.3s; }
+        .header_page { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background-color: var(--color-superficie); border-bottom: 1px solid var(--color-borde); }
+        .logo img { width: 150px; height: auto; }
+        .container_all_page { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+        .container_artist { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .card_artist { background-color: var(--color-superficie); border: 1px solid var(--color-borde); border-radius: 8px; padding: 20px; text-align: center; }
+        .card_artist h2 { font-size: 1.2rem; color: var(--color-texto-principal); margin-bottom: 5px; }
+        .card_artist p { font-size: 0.9rem; color: var(--color-texto-secundario); }
         .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; }
         .theme-switch-wrapper .fa-sun { color: var(--color-acento); font-size: 1.2rem; }
         .theme-switch-wrapper .fa-moon { color: var(--color-texto-principal); font-size: 1.2rem; }
@@ -124,7 +48,7 @@
 
     <div class="header_page">
         <div class="logo">
-            <img src="img/icono-buscador.png" alt="Logo Duende">
+            <img src="img/logo.png" alt="Logo Duende">
         </div>
         <div class="theme-switch-wrapper">
             <i class="fas fa-moon"></i>
@@ -145,54 +69,47 @@
     
     <script>
         // Lógica de la Aplicación
-        document.addEventListener('DOMContentLoaded', () => {
-            const resultsContainer = document.getElementById('container_artist');
-            let allEvents = []; // Para guardar todos los eventos y poder filtrar
-
-            async function loadAllEvents() {
-                resultsContainer.innerHTML = '<p>Cargando eventos...</p>';
-                try {
-                    // ** CAMBIO IMPORTANTE: Leemos el archivo local **
-                    const response = await fetch('script.json'); 
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    allEvents = await response.json();
-                    displayEvents(allEvents);
-                } catch (error) {
-                    resultsContainer.innerHTML = '<p>No se pudieron cargar los eventos.</p>';
-                }
-            }
+        $(document).ready(function() {
+            fetch('script.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al cargar script.json');
+                    return response.json();
+                })
+                .then(data => displayEvents(data))
+                .catch(error => {
+                    console.error('Error en fetch:', error);
+                    $('#container_artist').html('<p>No se pudieron cargar los eventos.</p>');
+                });
 
             function displayEvents(events) {
-                resultsContainer.innerHTML = '';
+                const resultsContainer = $('#container_artist');
+                resultsContainer.empty();
                 if (!events || events.length === 0) {
-                    resultsContainer.innerHTML = '<p>No se encontraron eventos.</p>';
+                    resultsContainer.html('<p>No se encontraron eventos.</p>');
                     return;
                 }
                 events.forEach(event => {
-                    const card = document.createElement('div');
-                    card.className = 'card_artist';
-                    card.innerHTML = `
-                        <img src="${event.foto}" alt="Foto de ${event.artista}">
-                        <h2>${event.artista}</h2>
-                        <p>${event.descripcion}</p>
+                    const cardHTML = `
+                        <div class="card_artist">
+                            <h2>${event.name || 'Sin Título'}</h2>
+                            <p><strong>${event.artist || 'Artista no especificado'}</strong></p>
+                            <p>${event.description || ''}</p>
+                            <p style="color: var(--color-texto-secundario); font-size: 0.8rem; margin-top: 10px;">
+                                ${event.city || ''} - ${event.date || ''}
+                            </p>
+                        </div>
                     `;
-                    resultsContainer.appendChild(card);
+                    resultsContainer.append(cardHTML);
                 });
             }
-            
-            // Cargar todos los eventos al iniciar
-            loadAllEvents();
         });
-
 
         // Lógica del Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service worker registrado con éxito.', reg))
-                    .catch(err => console.error('Error al registrar el service worker.', err));
+                    .then(reg => console.log('Service worker registrado.', reg))
+                    .catch(err => console.error('Error al registrar.', err));
             });
         }
 
@@ -200,7 +117,6 @@
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
         const themeMetaTag = document.querySelector('meta[name="theme-color"]');
-
         function applyTheme(theme) {
             if (theme === 'light') {
                 body.classList.add('light-theme');
@@ -213,14 +129,8 @@
             }
             localStorage.setItem('theme', theme);
         }
-
-        themeToggle.addEventListener('change', () => {
-            applyTheme(themeToggle.checked ? 'light' : 'dark');
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applyTheme(localStorage.getItem('theme') || 'dark');
-        });
+        themeToggle.addEventListener('change', () => applyTheme(themeToggle.checked ? 'light' : 'dark'));
+        document.addEventListener('DOMContentLoaded', () => applyTheme(localStorage.getItem('theme') || 'dark'));
     </script>
 </body>
 </html>
