@@ -37,107 +37,50 @@
             --color-acento: #ff8f00;
         }
 
-        /* ESTILOS COMPLETOS DE buscador.afland.es ADAPTADOS CON VARIABLES */
+        /* =================================
+           ESTILOS COMPLETOS DE BUSCADOR.AFLAND.ES (ADAPTADOS)
+        ==================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--color-fondo);
             color: var(--color-texto-principal);
             transition: background-color 0.3s, color 0.3s;
         }
+        
+        /* --- Cabecera --- */
         .header_page {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 20px 40px;
             background-color: var(--color-superficie);
             border-bottom: 1px solid var(--color-borde);
         }
         .logo img {
             width: 150px;
+            height: auto;
         }
+
+        /* --- Contenedor Principal --- */
+        .container_all_page {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        .container_artist {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- Tarjetas de Artista --- */
         .card_artist {
             background-color: var(--color-superficie);
             border: 1px solid var(--color-borde);
-            padding: 15px;
-            margin: 10px;
-            text-align: center;
-            width: 200px;
-        }
-        /* ... Aquí iría el resto de tu CSS de style.css, adaptado con var(...) ... */
-
-        /* --- Estilos del Interruptor de Tema --- */
-        .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; }
-        .theme-switch-wrapper .fa-sun { color: var(--color-acento); font-size: 1.2rem; }
-        .theme-switch-wrapper .fa-moon { color: var(--color-texto-principal); font-size: 1.2rem; }
-        .theme-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .theme-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-superficie); border: 1px solid var(--color-borde); transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: var(--color-texto-secundario); transition: .4s; }
-        input:checked + .slider { background-color: #ccc; }
-        input:checked + .slider:before { background-color: var(--color-acento); transform: translateX(24px); }
-        .slider.round { border-radius: 34px; }
-        .slider.round:before { border-radius: 50%; }
-    </style>
-</head>
-<body>
-
-    <div class="header_page">
-        <div class="logo">
-            <img src="img/logo-afland-pro.png" alt="Logo Afland">
-        </div>
-        <div class="theme-switch-wrapper">
-            <i class="fas fa-moon"></i>
-            <label class="theme-switch" for="theme-toggle">
-                <input type="checkbox" id="theme-toggle" />
-                <span class="slider round"></span>
-            </label>
-            <i class="fas fa-sun"></i>
-        </div>
-    </div>
-
-    <div class="container_all_page">
-        <div class="container_artist" id="container_artist">
-             </div>
-    </div>
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="js/script.js"></script>
-
-    <script>
-        // Lógica del Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service worker registrado.', reg))
-                    .catch(err => console.error('Error registrando service worker.', err));
-            });
-        }
-
-        // Lógica del selector de tema
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-        const themeMetaTag = document.querySelector('meta[name="theme-color"]');
-
-        function applyTheme(theme) {
-            if (theme === 'light') {
-                body.classList.add('light-theme');
-                themeToggle.checked = true;
-                themeMetaTag.setAttribute('content', '#f5f5f5');
-            } else {
-                body.classList.remove('light-theme');
-                themeToggle.checked = false;
-                themeMetaTag.setAttribute('content', '#121212');
-            }
-            localStorage.setItem('theme', theme);
-        }
-
-        themeToggle.addEventListener('change', () => {
-            applyTheme(themeToggle.checked ? 'light' : 'dark');
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applyTheme(localStorage.getItem('theme') || 'dark');
-        });
-    </script>
-</body>
-</html>
+            border-radius: 8px;
+            padding: 20px;
