@@ -1,5 +1,7 @@
-// Se espera a que todo el documento HTML esté cargado y listo.
+// js/script.js - VERSIÓN COMPLETA Y CORREGIDA
+
 $(document).ready(function() {
+    // Esta función se ejecuta en cuanto la página ha cargado completamente.
 
     // 1. Se pide la información del archivo local 'script.json'.
     fetch('script.json')
@@ -39,7 +41,7 @@ $(document).ready(function() {
         events.forEach(event => {
             
             // Para cada evento, se crea el código HTML de su tarjeta.
-            // ¡CORREGIDO! Ya no se incluye la etiqueta <img>.
+            // CORREGIDO: Ya no se incluye la etiqueta <img>.
             // Se usan los nombres de las propiedades de tu JSON: name, artist, description, city, date.
             const cardHTML = `
                 <div class="card_artist">
