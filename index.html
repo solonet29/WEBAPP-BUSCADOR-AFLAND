@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="img/logo-afland-pro.png">
+    <link rel="apple-touch-icon" href="img/icon-192x192.png">
     <meta name="theme-color" content="#121212">
     <link rel="icon" type="image/png" href="img/favicon.png">
+    <img src="img/logo.png" alt="Logo Duende">
 
     <style>
         /* =================================
@@ -38,7 +39,7 @@
         }
 
         /* =================================
-           ESTILOS COMPLETOS DE BUSCADOR.AFLAND.ES (ADAPTADOS)
+           ESTILOS COMPLETOS
         ==================================== */
         * {
             margin: 0;
@@ -52,7 +53,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* --- Cabecera --- */
         .header_page {
             display: flex;
             justify-content: space-between;
@@ -66,7 +66,6 @@
             height: auto;
         }
 
-        /* --- Contenedor Principal --- */
         .container_all_page {
             max-width: 1200px;
             margin: 2rem auto;
@@ -78,9 +77,150 @@
             gap: 20px;
         }
 
-        /* --- Tarjetas de Artista --- */
         .card_artist {
             background-color: var(--color-superficie);
             border: 1px solid var(--color-borde);
             border-radius: 8px;
             padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card_artist:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .card_artist img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-borde);
+            margin-bottom: 15px;
+        }
+        .card_artist h2 {
+            font-size: 1.2rem;
+            color: var(--color-texto-principal);
+            margin-bottom: 5px;
+        }
+        .card_artist p {
+            font-size: 0.9rem;
+            color: var(--color-texto-secundario);
+        }
+
+        .theme-switch-wrapper { display: flex; align-items: center; gap: 10px; }
+        .theme-switch-wrapper .fa-sun { color: var(--color-acento); font-size: 1.2rem; }
+        .theme-switch-wrapper .fa-moon { color: var(--color-texto-principal); font-size: 1.2rem; }
+        .theme-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-superficie); border: 1px solid var(--color-borde); transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: var(--color-texto-secundario); transition: .4s; }
+        input:checked + .slider { background-color: #ccc; }
+        input:checked + .slider:before { background-color: var(--color-acento); transform: translateX(24px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+    </style>
+</head>
+<body>
+
+    <div class="header_page">
+        <div class="logo">
+            <img src="img/icono-buscador.jpg" alt="Logo Duende">
+        </div>
+        <div class="theme-switch-wrapper">
+            <i class="fas fa-moon"></i>
+            <label class="theme-switch" for="theme-toggle">
+                <input type="checkbox" id="theme-toggle" />
+                <span class="slider round"></span>
+            </label>
+            <i class="fas fa-sun"></i>
+        </div>
+    </div>
+
+    <div class="container_all_page">
+        <div class="container_artist" id="container_artist">
+             </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <script>
+        // Lógica de la Aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            const resultsContainer = document.getElementById('container_artist');
+            let allEvents = []; // Para guardar todos los eventos y poder filtrar
+
+            async function loadAllEvents() {
+                resultsContainer.innerHTML = '<p>Cargando eventos...</p>';
+                try {
+                    // ** CAMBIO IMPORTANTE: Leemos el archivo local **
+                    const response = await fetch('script.json'); 
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    allEvents = await response.json();
+                    displayEvents(allEvents);
+                } catch (error) {
+                    resultsContainer.innerHTML = '<p>No se pudieron cargar los eventos.</p>';
+                }
+            }
+
+            function displayEvents(events) {
+                resultsContainer.innerHTML = '';
+                if (!events || events.length === 0) {
+                    resultsContainer.innerHTML = '<p>No se encontraron eventos.</p>';
+                    return;
+                }
+                events.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'card_artist';
+                    card.innerHTML = `
+                        <img src="${event.foto}" alt="Foto de ${event.artista}">
+                        <h2>${event.artista}</h2>
+                        <p>${event.descripcion}</p>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+            }
+            
+            // Cargar todos los eventos al iniciar
+            loadAllEvents();
+        });
+
+
+        // Lógica del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service worker registrado con éxito.', reg))
+                    .catch(err => console.error('Error al registrar el service worker.', err));
+            });
+        }
+
+        // Lógica para el selector de tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-theme');
+                themeToggle.checked = true;
+                themeMetaTag.setAttribute('content', '#f5f5f5');
+            } else {
+                body.classList.remove('light-theme');
+                themeToggle.checked = false;
+                themeMetaTag.setAttribute('content', '#121212');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('change', () => {
+            applyTheme(themeToggle.checked ? 'light' : 'dark');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(localStorage.getItem('theme') || 'dark');
+        });
+    </script>
+</body>
+</html>

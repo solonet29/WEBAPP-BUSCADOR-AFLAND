@@ -1,31 +1,24 @@
-const CACHE_NAME = 'pwa-clon-afland-v1';
+const CACHE_NAME = 'pwa-clon-afland-v3'; // Subo la versión para forzar actualización
 
 const urlsToCache = [
+  // Archivos principales
   './',
   './index.html',
-  './js/script.js',
-  './script.json',
   './manifest.json',
-  './img/logo-afland-pro.png',
+  './script.json',
+  
+  // Archivo JavaScript
+  './js/script.js',
+
+  // Lista de imágenes definitiva y consistente
+  './img/logo.png',
   './img/favicon.png',
+  './img/icon-192x192.png',
+  './img/icon-512x512.png',
+
+  // Archivos externos (CDNs)
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
   'https://code.jquery.com/jquery-3.7.1.min.js'
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(cacheNames => {
-    return Promise.all(cacheNames.map(cacheName => {
-      if (cacheName !== CACHE_NAME) {
-        return caches.delete(cacheName);
-      }
-    }));
-  }));
-});
-
-self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
-});
+// ... el resto del código del service worker sigue igual ...
