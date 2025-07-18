@@ -1,40 +1,46 @@
+// Se espera a que todo el documento HTML esté cargado y listo.
 $(document).ready(function() {
-    // Esta función se ejecuta en cuanto la página ha cargado completamente.
 
-    // 1. Pedimos los datos a tu archivo local script.json
+    // 1. Se pide la información del archivo local 'script.json'.
     fetch('script.json')
         .then(response => {
-            // Se comprueba si el archivo se encontró y la respuesta es correcta
+            // Se comprueba si el archivo se encontró correctamente.
             if (!response.ok) {
                 throw new Error('Error al cargar script.json. Estado: ' + response.status);
             }
-            return response.json(); // Se convierten los datos a formato JSON
+            // Si se encontró, se convierte la respuesta a formato JSON.
+            return response.json();
         })
         .then(data => {
-            // 2. Una vez tenemos los datos, se los pasamos a la función que los mostrará
+            // 2. Una vez convertidos los datos, se llama a la función para mostrarlos en pantalla.
             displayEvents(data);
         })
         .catch(error => {
-            // Si ocurre cualquier error en el proceso, se muestra un mensaje en la pantalla
-            console.error('Hubo un problema con la operación fetch:', error);
-            $('#container_artist').html('<p>No se pudieron cargar los eventos.</p>');
+            // 3. Si ocurre algún error en todo el proceso, se muestra un mensaje en la consola y en la página.
+            console.error('Hubo un problema con la operación de fetch:', error);
+            $('#container_artist').html('<p>No se pudieron cargar los eventos. Revisa la consola para más detalles.</p>');
         });
 
-    // 3. Esta es la función que sabe cómo "dibujar" cada tarjeta
+    /**
+     * Esta es la función que recibe la lista de eventos y los "dibuja" en la página.
+     * @param {Array} events - La lista de eventos que viene del archivo script.json.
+     */
     function displayEvents(events) {
         const resultsContainer = $('#container_artist');
-        resultsContainer.empty(); // Limpiamos el contenedor por si había algo antes
+        resultsContainer.empty(); // Se vacía el contenedor por si había algo antes.
 
+        // Se comprueba si la lista de eventos está vacía.
         if (!events || events.length === 0) {
-            resultsContainer.html('<p>No se encontraron eventos.</p>');
+            resultsContainer.html('<p>No se encontraron eventos en el archivo de datos.</p>');
             return;
         }
 
-        // 4. Recorremos cada evento de la lista y creamos una tarjeta para él
+        // Se recorre cada evento de la lista.
         events.forEach(event => {
-            // ¡AQUÍ ESTÁ LA MAGIA!
-            // Usamos los nombres exactos de tu script.json: event.name, event.artist, etc.
             
+            // Para cada evento, se crea el código HTML de su tarjeta.
+            // ¡CORREGIDO! Ya no se incluye la etiqueta <img>.
+            // Se usan los nombres de las propiedades de tu JSON: name, artist, description, city, date.
             const cardHTML = `
                 <div class="card_artist">
                     <h2>${event.name}</h2>
@@ -46,7 +52,7 @@ $(document).ready(function() {
                 </div>
             `;
             
-            // Se añade la tarjeta recién creada al contenedor en la página
+            // Finalmente, se añade la tarjeta recién creada al contenedor principal.
             resultsContainer.append(cardHTML);
         });
     }
