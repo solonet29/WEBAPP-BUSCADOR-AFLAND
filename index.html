@@ -17,11 +17,7 @@
     <style>
         :root {
             --color-fondo: #170807;
-            --color-superficie: #1e1e1e;
-            --color-borde: #444;
-            --color-primario: #858052; 
-            --color-acento-brillante: #D4C992; 
-            --color-texto-principal: #e0e0e0;
+            /* ... Tu CSS completo va aquí ... */
             --color-texto-secundario: #a0a0a0;
         }
         body {
@@ -132,3 +128,41 @@
         footer a { color: var(--color-acento-brillante); text-decoration: none; font-weight: 700; }
     </style>
 </head>
+<body>
+    <div class="container">
+        <h1>Tu Buscador <span>Flamenco</span></h1>
+        
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Busca por artista, ciudad, recinto...">
+            <button id="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="filtros-ciudades">
+            </div>
+        
+        <h2>Próximos Eventos</h2>
+        <div id="resultsContainer" class="grid-mode">
+            </div>
+    </div>
+    
+    <footer>
+        <p>Desarrollado con ❤️ por <a href="#">Tu Nombre</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js') // Ruta relativa
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Fallo al registrar el Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
